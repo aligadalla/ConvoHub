@@ -8,9 +8,12 @@ const userSchema = new mongoose.Schema(
     role: { type: String, enum: ["admin", "user"], default: "user" },
     avatarUrl: { type: String },
     status: { type: String, enum: ["Online", "Offline"], default: "Offline" },
+    blockedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User", index: true }], 
   },
   { timestamps: true }
 );
+
+userSchema.index({ blockedUsers: 1 });
 
 const User = mongoose.model("User", userSchema);
 export default User;

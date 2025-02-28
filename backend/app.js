@@ -3,6 +3,7 @@ import cookieParser from "cookie-parser";
 import connectDB from "./config/database.js";
 
 import authRouter from "./auth/auth.routes.js";
+import userRouter from "./user/user.routes.js";
 import errorMiddleware from "./utils/errorMiddleware.js";
 
 const app = express();
@@ -11,6 +12,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use('/auth', authRouter);
+app.use('/user', userRouter);
 app.use(errorMiddleware);
 
 connectDB().then(() => {

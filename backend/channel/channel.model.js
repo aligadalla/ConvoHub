@@ -6,6 +6,8 @@ const channelSchema = new mongoose.Schema(
     type: { type: String, enum: ["public", "private"], required: true },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     members: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    private: { type: Boolean, default: false }, // Determines if a channel is private
+    pendingRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // Users requesting to join
   },
   { timestamps: true }
 );
