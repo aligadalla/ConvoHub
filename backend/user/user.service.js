@@ -1,17 +1,19 @@
 import AppError from "../utils/AppError.js";
+import mongoose from "mongoose";
 import User from "./user.model.js";
 
 class UserService {
     async getUserById(id) {
+        id = mongoose.Types.ObjectId.createFromHexString(id);
         const user = await User.findById(id);
         if (!user) throw new AppError("User not found");
         return user;
     }
 
     async deleteUserById(user, id) {
-        if (user.role !== "admin" || user._id !== id) throw new AppError("Not authorized to delete user");
-        
-        await User.findByIdAndDelete(id);
+        if (user.role !== "admin" && user._id.toString() !== id.toString()) throw new AppError("Not authorized to delete user");
+
+        await User.findByIdAndDelete(mongoose.Types.ObjectId.createFromHexString(id));
         return "User deleted successfully";
     }
 
@@ -31,7 +33,8 @@ class UserService {
     }
 
     async blockUser(user, id) {
-        const isBlocked = User.findOne({ _id: user._id, blockedUsers: id });
+        id = mongoose.Types.ObjectId.createFromHexString(id);
+        const isBlocked = await User.findOne({ _id: user._id, blockedUsers: id });
         if (isBlocked) throw new AppError("User is already blocked", 400);
 
         await User.findByIdAndUpdate(user._id, { $push: { blockedUsers: id } });
@@ -39,7 +42,8 @@ class UserService {
     }
 
     async unblockUser(user, id) {
-        const isBlocked = User.findOne({ _id: user._id, blockedUsers: id });
+        id = mongoose.Types.ObjectId.createFromHexString(id);
+        const isBlocked = await User.findOne({ _id: user._id, blockedUsers: id });
         if (!isBlocked) throw new AppError("User is not blocked", 400);
 
         await User.findByIdAndUpdate(user._id, { $pull: { blockedUsers: id } });

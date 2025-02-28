@@ -13,7 +13,5 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-userSchema.index({ blockedUsers: 1 });
-
 const User = mongoose.model("User", userSchema);
 export default User;

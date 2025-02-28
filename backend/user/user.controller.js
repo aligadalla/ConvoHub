@@ -3,7 +3,7 @@ import userService from "./user.service.js";
 
 class UserController {
     getUserById = AsyncWrapper(async (req, res) => {
-        const user = await userService.getUserById(req.user._id);
+        const user = await userService.getUserById(req.params.id);
         res.status(200).json({ data: user });
     });
 
