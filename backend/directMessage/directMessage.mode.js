@@ -15,8 +15,7 @@ const directMessageSchema = new mongoose.Schema(
     content: { type: String },
     mediaType: {
       type: String,
-      enum: ["text", "image", "video", "voice"],
-      required: true,
+      enum: ["image", "video", "voice"],
     },
     mediaUrl: { type: String },
   },

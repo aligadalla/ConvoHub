@@ -17,8 +17,8 @@ class DirectMessageService {
       );
 
     const message = {
-      senderId: user._id,
-      receiverId: id,
+      senderId: user._id.toString(),
+      receiverId: id.toString(),
       content: data,
       mediaType: null,
       mediaUrl: null,
@@ -33,6 +33,9 @@ class DirectMessageService {
     });
 
     const validateMessage = validateInput(messageSchema, message);
+
+    validateMessage.senderId = mongoose.Types.ObjectId(user._id);
+    validatedMessage.receiverId = mongoose.Types.ObjectId(id);
 
     const newMessage = await DirectMessage.create(validateMessage);
     return newMessage;

@@ -21,3 +21,5 @@ directMessageRouter.get(
   authController.authorize,
   directMessageController.getChat
 );
+
+export default directMessageRouter;

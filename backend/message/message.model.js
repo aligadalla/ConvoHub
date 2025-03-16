@@ -2,10 +2,18 @@ import mongoose from "mongoose";
 
 const messageSchema = new mongoose.Schema(
   {
-    senderId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-    channelId: { type: mongoose.Schema.Types.ObjectId, ref: "Channel", required: true },
+    senderId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    channelId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Channel",
+      required: true,
+    },
     content: { type: String },
-    mediaType: { type: String, enum: ["text", "image", "video", "voice"], required: true },
+    mediaType: { type: String, enum: ["image", "video", "voice"] },
     mediaUrl: { type: String },
     reactions: [
       {
