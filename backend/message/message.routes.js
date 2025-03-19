@@ -11,7 +11,7 @@ messageRouter.post(
 );
 
 messageRouter.delete(
-  "/delete/:id",
+  "/delete/:messageId",
   authController.authorize,
   messageController.deleteMessage
 );

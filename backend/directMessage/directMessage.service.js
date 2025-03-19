@@ -7,7 +7,7 @@ import User from "../user/user.model.js";
 
 class DirectMessageService {
   async sendMessage(user, id, file, data) {
-    id = mongoose.Types.ObjectId(id);
+    id = new mongoose.Types.ObjectId(id);
     const isBlocked = await User.findOne({ id: user._id, blockedUsers: id });
     const blockedMe = await User.findOne({ id: id, blockedUsers: user._id });
     if (isBlocked || blockedMe)
@@ -32,23 +32,27 @@ class DirectMessageService {
       mediaUrl: z.string().optional().nullable(),
     });
 
-    const validateMessage = validateInput(messageSchema, message);
+    const validatedMessage = validateInput(messageSchema, message);
 
-    validateMessage.senderId = mongoose.Types.ObjectId(user._id);
-    validatedMessage.receiverId = mongoose.Types.ObjectId(id);
+    validatedMessage.senderId = new mongoose.Types.ObjectId(user._id);
+    validatedMessage.receiverId = new mongoose.Types.ObjectId(id);
 
-    const newMessage = await DirectMessage.create(validateMessage);
+    const newMessage = await DirectMessage.create(validatedMessage);
     return newMessage;
   }
 
-  async deleteMessage(id) {
-    id = mongoose.Types.ObjectId(id);
-    await DirectMessage.findByIdAndDelete(id);
+  async deleteMessage(user, messageId) {
+    messageId = new mongoose.Types.ObjectId(messageId);
+    const message = await DirectMessage.findById(messageId);
+    if (message.senderId.toString() !== user._id.toString())
+      throw new AppError("Not authorized", 401);
+
+    await DirectMessage.findByIdAndDelete(messageId);
     return "Successfully Deleted!!";
   }
 
   async getChat(user, id) {
-    id = mongoose.Types.ObjectId(id);
+    id = new mongoose.Types.ObjectId(id);
     const isBlocked = await User.findOne({ id: user._id, blockedUsers: id });
     const blockedMe = await User.findOne({ id: id, blockedUsers: user._id });
     if (isBlocked || blockedMe)
@@ -65,6 +69,43 @@ class DirectMessageService {
     }).sort({ createdAt: 1 });
 
     return messages;
+  }
+
+  async addReaction(user, messageId, type) {
+    messageId = new mongoose.Types.ObjectId(messageId);
+    const updatedMessage = DirectMessage.findByIdAndUpdate(
+      messageId,
+      {
+        $push: {
+          reactions: {
+            userId: user._id,
+            type: type,
+          },
+        },
+      },
+      { new: true }
+    );
+
+    if (!updatedMessage) throw new AppError("Message not found", 404);
+
+    return updatedMessage;
+  }
+
+  async removeReation(user, messageId) {
+    messageId = new mongoose.Types.ObjectId(messageId);
+    const updatedMessage = DirectMessage.findByIdAndUpdate(
+      messageId,
+      {
+        $pull: {
+          reactions: { userId: user._id },
+        },
+      },
+      { new: true }
+    );
+
+    if (!updatedMessage) throw new AppError("Message Not Found", 404);
+
+    return updatedMessage;
   }
 }
 

@@ -18,6 +18,12 @@ const directMessageSchema = new mongoose.Schema(
       enum: ["image", "video", "voice"],
     },
     mediaUrl: { type: String },
+    reactions: [
+      {
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        type: { type: String },
+      },
+    ],
   },
   { timestamps: true }
 );

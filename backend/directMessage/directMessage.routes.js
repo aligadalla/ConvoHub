@@ -11,15 +11,22 @@ directMessageRouter.post(
 );
 
 directMessageRouter.delete(
-  "delete/:id",
+  "/delete/:messageId",
   authController.authorize,
   directMessageController.deleteMessage
 );
 
 directMessageRouter.get(
-  "getChat/:id",
+  "/getChat/:id",
   authController.authorize,
   directMessageController.getChat
+);
+
+directMessageRouter.patch("/addReaction/:messageId", authController.authorize);
+
+directMessageRouter.patch(
+  "/removeReaction/:messageId",
+  authController.authorize
 );
 
 export default directMessageRouter;

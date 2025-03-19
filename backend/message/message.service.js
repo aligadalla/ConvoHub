@@ -30,9 +30,13 @@ class MessageService {
     return newMessage;
   }
 
-  async deleteMessage(id) {
-    id = mongoose.Types.ObjectId(id);
-    await Message.findByIdAndDelete(id);
+  async deleteMessage(user, messageId) {
+    messageId = mongoose.Types.ObjectId(messageId);
+    const message = await Message.findById(messageId);
+    if (message.senderId.toString() !== user._id.toString())
+      throw new AppError("Not Authorized", 401);
+
+    await Message.findByIdAndDelete(messageId);
     return "Successfully Deleted!!";
   }
 

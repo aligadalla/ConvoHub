@@ -13,7 +13,10 @@ class MessagesController {
   });
 
   deleteMessage = AsyncWrapper(async (req, res) => {
-    const data = await messageService.deleteMessage(req.params.id);
+    const data = await messageService.deleteMessage(
+      req.user,
+      req.params.messageId
+    );
     res.status(200).json({ data: data });
   });
 
