@@ -6,6 +6,7 @@ import authRouter from "./auth/auth.routes.js";
 import userRouter from "./user/user.routes.js";
 import directMessageRouter from "./directMessage/directMessage.routes.js";
 import messageRouter from "./message/message.routes.js";
+import channelRouter from "./channel/channel.routes.js";
 import errorMiddleware from "./utils/errorMiddleware.js";
 
 const app = express();
@@ -17,6 +18,7 @@ app.use("/auth", authRouter);
 app.use("/user", userRouter);
 app.use("/directMessage", directMessageRouter);
 app.use("/channelMessage", messageRouter);
+app.use("/channel", channelRouter);
 app.use(errorMiddleware);
 
 connectDB().then(() => {
